@@ -1,6 +1,18 @@
-// Put any @imports here
+@import 'font-awesome';
 // See Readme for a list of supported ones
 
 body {
   background: #e2ebf3;
+}
+
+ul li {
+	display: inline-block;
+	margin-right: 5px;
+}
+i {
+	margin-left: 5px;
+}
+
+a {
+	text-decoration: none;
 }

@@ -8,6 +8,11 @@ let config = function($stateProvider, $urlRouterProvider){
 			controller: 'DashCtrl as vm',
 			templateUrl: 'templates/app-core/layout.html'
 		})
+		.state('root.login', {
+			url: '/login',
+			controller: 'LoginCtrl as vm',
+			templateUrl: 'templates/app-core/login.html'
+		})
 		.state('root.dash', {
 			url: '/',
 			controller: 'DashCtrl as vm',
