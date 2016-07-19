@@ -5,7 +5,7 @@ let config = function($stateProvider, $urlRouterProvider){
 	$stateProvider
 		.state('root', {
 			abstract: true,
-			controller: 'DashCtrl as vm',
+			controller: 'LoginCtrl as vm',
 			templateUrl: 'templates/app-core/layout.html'
 		})
 		.state('root.login', {

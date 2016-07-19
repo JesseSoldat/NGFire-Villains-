@@ -17,8 +17,8 @@ let LoginService = function($state){
 		firebase.auth().signInWithEmailAndPassword(user.email, user.password).catch(function(error){
 		console.log(error.code, error.message);
 		});
+		
 	
-		$state.go('root.dash');
 	}
 
 };

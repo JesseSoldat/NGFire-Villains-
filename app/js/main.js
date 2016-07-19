@@ -10,7 +10,7 @@ var config = function config($stateProvider, $urlRouterProvider) {
 
 	$stateProvider.state('root', {
 		abstract: true,
-		controller: 'DashCtrl as vm',
+		controller: 'LoginCtrl as vm',
 		templateUrl: 'templates/app-core/layout.html'
 	}).state('root.login', {
 		url: '/login',
@@ -36,16 +36,23 @@ exports['default'] = config;
 module.exports = exports['default'];
 
 },{}],2:[function(require,module,exports){
-"use strict";
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
+Object.defineProperty(exports, '__esModule', {
+	value: true
 });
-var DashCtrl = function DashCtrl() {};
-DashCtrl.$inject = [];
+var DashCtrl = function DashCtrl($state) {
+	//Check for logged in user
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {} else {
+			$state.go('root.login');
+		}
+	});
+};
+DashCtrl.$inject = ['$state'];
 
-exports["default"] = DashCtrl;
-module.exports = exports["default"];
+exports['default'] = DashCtrl;
+module.exports = exports['default'];
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -53,11 +60,19 @@ module.exports = exports["default"];
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-var LoginCtrl = function LoginCtrl(LoginService) {
+var LoginCtrl = function LoginCtrl(LoginService, $state) {
 	var vm = this;
 
 	this.register = register;
 	this.login = login;
+	this.logout = logout;
+
+	//Check for logged in user
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			$state.go('root.dash');
+		} else {}
+	});
 
 	function register(user) {
 		LoginService.register(user);
@@ -66,8 +81,16 @@ var LoginCtrl = function LoginCtrl(LoginService) {
 	function login(user) {
 		LoginService.login(user);
 	}
+
+	function logout() {
+		firebase.auth().signOut().then(function () {
+			$state.go('root.login');
+		}, function (error) {
+			console.log(error);
+		});
+	}
 };
-LoginCtrl.$inject = ['LoginService'];
+LoginCtrl.$inject = ['LoginService', '$state'];
 
 exports['default'] = LoginCtrl;
 module.exports = exports['default'];
@@ -125,8 +148,6 @@ var LoginService = function LoginService($state) {
 		firebase.auth().signInWithEmailAndPassword(user.email, user.password)['catch'](function (error) {
 			console.log(error.code, error.message);
 		});
-
-		$state.go('root.dash');
 	}
 };
 
@@ -145,6 +166,13 @@ var AddVillainCtrl = function AddVillainCtrl(VillainService, $state) {
 	var vm = this;
 	this.addVillain = addVillain;
 
+	//Check for logged in user
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {} else {
+			$state.go('root.login');
+		}
+	});
+
 	function addVillain(char) {
 		VillainService.addVillain(char);
 		$state.go('root.villains');
@@ -161,15 +189,30 @@ module.exports = exports['default'];
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-var VillainsCtrl = function VillainsCtrl(VillainService) {
+var VillainsCtrl = function VillainsCtrl(VillainService, $state, $scope) {
 	var vm = this;
 
-	var villainsArray = VillainService.getVillains();
-	// console.log(villainsArray);
+	//Check for logged in user
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			getVillains();
+		} else {
+			$state.go('root.login');
+		}
+	});
 
-	vm.villains = villainsArray;
+	// setTimeout(function(){
+	// 	getVillains();
+
+	// },100);
+
+	function getVillains() {
+		var villainsArray = VillainService.getVillains();
+
+		vm.villains = villainsArray;
+	}
 };
-VillainsCtrl.$inject = ['VillainService'];
+VillainsCtrl.$inject = ['VillainService', '$state', '$scope'];
 
 exports['default'] = VillainsCtrl;
 module.exports = exports['default'];
