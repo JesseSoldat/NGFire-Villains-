@@ -1,4 +1,4 @@
-let LoginService = function(){
+let LoginService = function($state){
 
 	this.register = register;
 	this.login = login;
@@ -9,16 +9,20 @@ let LoginService = function(){
 		var errorMessage = error.message;
 			console.log(errorMessage);
 		});
+		// login(user);
 	}
 
 	
-
 	function login(user){
-
+		firebase.auth().signInWithEmailAndPassword(user.email, user.password).catch(function(error){
+		console.log(error.code, error.message);
+		});
+	
+		$state.go('root.dash');
 	}
 
 };
 
-LoginService.$inject = [];
+LoginService.$inject = ['$state'];
 
 export default LoginService;

@@ -9,7 +9,8 @@ let LoginCtrl = function(LoginService){
 	}
 
 	function login(user){
-		console.log(user);
+		LoginService.login(user);
+
 	}
 
 };

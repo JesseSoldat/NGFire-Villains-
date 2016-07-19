@@ -5,6 +5,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 
 import  './app-core/index';
+import './app-villains/index';
 
 // Initialize Firebase
   var fireConfig = {
@@ -17,4 +18,4 @@ import  './app-core/index';
 
 
 angular
-	.module('app', ['app.core', 'firebase']);
+	.module('app', ['app.core', 'app.villains', 'firebase']);

@@ -20,6 +20,10 @@ var config = function config($stateProvider, $urlRouterProvider) {
 		url: '/',
 		controller: 'DashCtrl as vm',
 		templateUrl: 'templates/app-core/dash.html'
+	}).state('root.addVillain', {
+		url: '/addvillain',
+		controller: 'AddVillainCtrl as vm',
+		templateUrl: 'templates/app-villains/add-villain.html'
 	});
 };
 config.$inject = ['$stateProvider', '$urlRouterProvider'];
@@ -56,7 +60,7 @@ var LoginCtrl = function LoginCtrl(LoginService) {
 	}
 
 	function login(user) {
-		console.log(user);
+		LoginService.login(user);
 	}
 };
 LoginCtrl.$inject = ['LoginService'];
@@ -93,34 +97,106 @@ var _servicesLoginService2 = _interopRequireDefault(_servicesLoginService);
 
 _angular2['default'].module('app.core', ['ui.router']).config(_config2['default']).controller('LoginCtrl', _ctrlLoginCtrl2['default']).controller('DashCtrl', _ctrlDashCtrl2['default']).service('LoginService', _servicesLoginService2['default']);
 
-},{"./config":1,"./ctrl/dash.ctrl":2,"./ctrl/login.ctrl":3,"./services/login.service":5,"angular":9,"angular-ui-router":7}],5:[function(require,module,exports){
-"use strict";
+},{"./config":1,"./ctrl/dash.ctrl":2,"./ctrl/login.ctrl":3,"./services/login.service":5,"angular":12,"angular-ui-router":10}],5:[function(require,module,exports){
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-var LoginService = function LoginService() {
+var LoginService = function LoginService($state) {
 
 	this.register = register;
 	this.login = login;
 
 	function register(user) {
-		firebase.auth().createUserWithEmailAndPassword(user.email, user.password)["catch"](function (error) {
+		firebase.auth().createUserWithEmailAndPassword(user.email, user.password)['catch'](function (error) {
 			var errorCode = error.code;
 			var errorMessage = error.message;
 			console.log(errorMessage);
 		});
+		// login(user);
 	}
 
-	function login(user) {}
+	function login(user) {
+		firebase.auth().signInWithEmailAndPassword(user.email, user.password)['catch'](function (error) {
+			console.log(error.code, error.message);
+		});
+
+		$state.go('root.dash');
+	}
 };
 
-LoginService.$inject = [];
+LoginService.$inject = ['$state'];
 
-exports["default"] = LoginService;
-module.exports = exports["default"];
+exports['default'] = LoginService;
+module.exports = exports['default'];
 
 },{}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+var AddVillainCtrl = function AddVillainCtrl(VillainService) {
+	var vm = this;
+	this.addVillain = addVillain;
+
+	function addVillain(char) {
+		VillainService.addVillain(char);
+	}
+};
+AddVillainCtrl.$inject = ['VillainService'];
+
+exports['default'] = AddVillainCtrl;
+module.exports = exports['default'];
+
+},{}],7:[function(require,module,exports){
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _ctrlAddVillainCtrl = require('./ctrl/add-villain.ctrl');
+
+var _ctrlAddVillainCtrl2 = _interopRequireDefault(_ctrlAddVillainCtrl);
+
+var _servicesVillainService = require('./services/villain.service');
+
+var _servicesVillainService2 = _interopRequireDefault(_servicesVillainService);
+
+_angular2['default'].module('app.villains', []).controller('AddVillainCtrl', _ctrlAddVillainCtrl2['default']).service('VillainService', _servicesVillainService2['default']);
+
+},{"./ctrl/add-villain.ctrl":6,"./services/villain.service":8,"angular":12}],8:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+var VillainService = function VillainService($firebaseArray) {
+
+	var ref = firebase.database().ref('villains');
+
+	var array = $firebaseArray(ref);
+
+	this.addVillain = addVillain;
+
+	function addVillain(char) {
+		array.$add({
+			name: char.name,
+			url: char.url
+		});
+	}
+};
+
+VillainService.$inject = ['$firebaseArray'];
+
+exports['default'] = VillainService;
+module.exports = exports['default'];
+
+},{}],9:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -147,6 +223,8 @@ var _underscore2 = _interopRequireDefault(_underscore);
 
 require('./app-core/index');
 
+require('./app-villains/index');
+
 // Initialize Firebase
 var fireConfig = {
   apiKey: "AIzaSyBcIFiCZP7GivCJr3b5JwflgFq_KuOwjwI",
@@ -156,9 +234,9 @@ var fireConfig = {
 };
 _firebase2['default'].initializeApp(fireConfig);
 
-_angular2['default'].module('app', ['app.core', 'firebase']);
+_angular2['default'].module('app', ['app.core', 'app.villains', 'firebase']);
 
-},{"./app-core/index":4,"angular":9,"angularfire":11,"firebase":12,"jquery":14,"underscore":15}],7:[function(require,module,exports){
+},{"./app-core/index":4,"./app-villains/index":7,"angular":12,"angularfire":14,"firebase":15,"jquery":17,"underscore":18}],10:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.3.1
@@ -4735,7 +4813,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],8:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.7
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -36209,11 +36287,11 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],9:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":8}],10:[function(require,module,exports){
+},{"./angular":11}],13:[function(require,module,exports){
 /*!
  * AngularFire is the officially supported AngularJS binding for Firebase. Firebase
  * is a full backend so you don't need servers to build your Angular app. AngularFire
@@ -38472,7 +38550,7 @@ if ( typeof Object.getPrototypeOf !== "function" ) {
     }
 })();
 
-},{}],11:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 // Make sure dependencies are loaded on the window
 require('angular');
 require('firebase');
@@ -38483,7 +38561,7 @@ require('./dist/angularfire');
 // Export the module name from the Angular module
 module.exports = 'firebase';
 
-},{"./dist/angularfire":10,"angular":9,"firebase":12}],12:[function(require,module,exports){
+},{"./dist/angularfire":13,"angular":12,"firebase":15}],15:[function(require,module,exports){
 /**
  *  Firebase libraries for browser - npm package.
  *
@@ -38494,7 +38572,7 @@ module.exports = 'firebase';
 require('./firebase');
 module.exports = firebase;
 
-},{"./firebase":13}],13:[function(require,module,exports){
+},{"./firebase":16}],16:[function(require,module,exports){
 (function (global){
 /*! @license Firebase v3.2.0
     Build: 3.2.0-rc.2
@@ -39062,7 +39140,7 @@ ra.STATE_CHANGED="state_changed";sa.RUNNING="running";sa.PAUSED="paused";sa.SUCC
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],14:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.4
  * http://jquery.com/
@@ -48878,7 +48956,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],15:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -50428,7 +50506,7 @@ return jQuery;
   }
 }.call(this));
 
-},{}]},{},[6])
+},{}]},{},[9])
 
 
 //# sourceMappingURL=main.js.map

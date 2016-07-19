@@ -18,6 +18,11 @@ let config = function($stateProvider, $urlRouterProvider){
 			controller: 'DashCtrl as vm',
 			templateUrl: 'templates/app-core/dash.html'
 		})
+		.state('root.addVillain', {
+			url: '/addvillain',
+			controller: 'AddVillainCtrl as vm',
+			templateUrl: 'templates/app-villains/add-villain.html'
+		})
 		;
 
 };

@@ -8,6 +8,7 @@ import DashCtrl from './ctrl/dash.ctrl';
 
 import LoginService from './services/login.service';
 
+
 angular
 	.module('app.core', ['ui.router'])
 	.config(config)
