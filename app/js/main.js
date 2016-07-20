@@ -28,6 +28,10 @@ var config = function config($stateProvider, $urlRouterProvider) {
 		url: '/addvillain',
 		controller: 'AddVillainCtrl as vm',
 		templateUrl: 'templates/app-villains/add-villain.html'
+	}).state('root.profile', {
+		url: '/profile',
+		controller: 'ProfileCtrl as vm',
+		templateUrl: 'templates/app-profile/profile.html'
 	});
 };
 config.$inject = ['$stateProvider', '$urlRouterProvider'];
@@ -124,7 +128,7 @@ var _servicesLoginService2 = _interopRequireDefault(_servicesLoginService);
 
 _angular2['default'].module('app.core', ['ui.router']).config(_config2['default']).controller('LoginCtrl', _ctrlLoginCtrl2['default']).controller('DashCtrl', _ctrlDashCtrl2['default']).service('LoginService', _servicesLoginService2['default']);
 
-},{"./config":1,"./ctrl/dash.ctrl":2,"./ctrl/login.ctrl":3,"./services/login.service":5,"angular":13,"angular-ui-router":11}],5:[function(require,module,exports){
+},{"./config":1,"./ctrl/dash.ctrl":2,"./ctrl/login.ctrl":3,"./services/login.service":5,"angular":15,"angular-ui-router":13}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -157,6 +161,34 @@ exports['default'] = LoginService;
 module.exports = exports['default'];
 
 },{}],6:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var ProfileCtrl = function ProfileCtrl() {};
+
+ProfileCtrl.$inject = [];
+
+exports["default"] = ProfileCtrl;
+module.exports = exports["default"];
+
+},{}],7:[function(require,module,exports){
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _angular = require('angular');
+
+var _angular2 = _interopRequireDefault(_angular);
+
+var _ctrlProfileCtrl = require('./ctrl/profile.ctrl');
+
+var _ctrlProfileCtrl2 = _interopRequireDefault(_ctrlProfileCtrl);
+
+_angular2['default'].module('app.profile', []).controller('ProfileCtrl', _ctrlProfileCtrl2['default']);
+
+},{"./ctrl/profile.ctrl":6,"angular":15}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -183,7 +215,7 @@ AddVillainCtrl.$inject = ['VillainService', '$state'];
 exports['default'] = AddVillainCtrl;
 module.exports = exports['default'];
 
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -217,7 +249,7 @@ VillainsCtrl.$inject = ['VillainService', '$state', '$scope'];
 exports['default'] = VillainsCtrl;
 module.exports = exports['default'];
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -242,7 +274,7 @@ _angular2['default'].module('app.villains', [])
 //CTRL
 .controller('VillainsCtrl', _ctrlVillainsCtrl2['default']).controller('AddVillainCtrl', _ctrlAddVillainCtrl2['default']).service('VillainService', _servicesVillainService2['default']);
 
-},{"./ctrl/add-villain.ctrl":6,"./ctrl/villains.ctrl":7,"./services/villain.service":9,"angular":13}],9:[function(require,module,exports){
+},{"./ctrl/add-villain.ctrl":8,"./ctrl/villains.ctrl":9,"./services/villain.service":11,"angular":15}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -275,7 +307,7 @@ VillainService.$inject = ['$firebaseArray'];
 exports['default'] = VillainService;
 module.exports = exports['default'];
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -304,6 +336,8 @@ require('./app-core/index');
 
 require('./app-villains/index');
 
+require('./app-profile/index');
+
 // Initialize Firebase
 var fireConfig = {
   apiKey: "AIzaSyBcIFiCZP7GivCJr3b5JwflgFq_KuOwjwI",
@@ -313,9 +347,9 @@ var fireConfig = {
 };
 _firebase2['default'].initializeApp(fireConfig);
 
-_angular2['default'].module('app', ['app.core', 'app.villains', 'firebase']);
+_angular2['default'].module('app', ['app.core', 'app.villains', 'app.profile', 'firebase']);
 
-},{"./app-core/index":4,"./app-villains/index":8,"angular":13,"angularfire":15,"firebase":16,"jquery":18,"underscore":19}],11:[function(require,module,exports){
+},{"./app-core/index":4,"./app-profile/index":7,"./app-villains/index":10,"angular":15,"angularfire":17,"firebase":18,"jquery":20,"underscore":21}],13:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.3.1
@@ -4892,7 +4926,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.7
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -36366,11 +36400,11 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":12}],14:[function(require,module,exports){
+},{"./angular":14}],16:[function(require,module,exports){
 /*!
  * AngularFire is the officially supported AngularJS binding for Firebase. Firebase
  * is a full backend so you don't need servers to build your Angular app. AngularFire
@@ -38629,7 +38663,7 @@ if ( typeof Object.getPrototypeOf !== "function" ) {
     }
 })();
 
-},{}],15:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 // Make sure dependencies are loaded on the window
 require('angular');
 require('firebase');
@@ -38640,7 +38674,7 @@ require('./dist/angularfire');
 // Export the module name from the Angular module
 module.exports = 'firebase';
 
-},{"./dist/angularfire":14,"angular":13,"firebase":16}],16:[function(require,module,exports){
+},{"./dist/angularfire":16,"angular":15,"firebase":18}],18:[function(require,module,exports){
 /**
  *  Firebase libraries for browser - npm package.
  *
@@ -38651,7 +38685,7 @@ module.exports = 'firebase';
 require('./firebase');
 module.exports = firebase;
 
-},{"./firebase":17}],17:[function(require,module,exports){
+},{"./firebase":19}],19:[function(require,module,exports){
 (function (global){
 /*! @license Firebase v3.2.0
     Build: 3.2.0-rc.2
@@ -39219,7 +39253,7 @@ ra.STATE_CHANGED="state_changed";sa.RUNNING="running";sa.PAUSED="paused";sa.SUCC
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],18:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.4
  * http://jquery.com/
@@ -49035,7 +49069,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -50585,7 +50619,7 @@ return jQuery;
   }
 }.call(this));
 
-},{}]},{},[10])
+},{}]},{},[12])
 
 
 //# sourceMappingURL=main.js.map

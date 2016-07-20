@@ -28,6 +28,11 @@ let config = function($stateProvider, $urlRouterProvider){
 			controller: 'AddVillainCtrl as vm',
 			templateUrl: 'templates/app-villains/add-villain.html'
 		})
+		.state('root.profile', {
+			url: '/profile',
+			controller: 'ProfileCtrl as vm',
+			templateUrl: 'templates/app-profile/profile.html'
+		})
 		;
 
 };

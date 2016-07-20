@@ -6,6 +6,7 @@ import _ from 'underscore';
 
 import  './app-core/index';
 import './app-villains/index';
+import './app-profile/index';
 
 // Initialize Firebase
   var fireConfig = {
@@ -18,4 +19,4 @@ import './app-villains/index';
 
 
 angular
-	.module('app', ['app.core', 'app.villains', 'firebase']);
+	.module('app', ['app.core', 'app.villains', 'app.profile', 'firebase']);
