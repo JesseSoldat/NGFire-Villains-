@@ -2212,4 +2212,12 @@ a {
     max-width: 100%;
     height: 220px; }
 
+#editUserForm input, #editUserForm textarea {
+  display: block;
+  margin: 15px; }
+
+#editUserForm button {
+  display: block;
+  margin: 15px; }
+
 /*# sourceMappingURL=main.css.map */

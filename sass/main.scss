@@ -28,3 +28,16 @@ a {
 		height: 220px;
 	}
 }
+
+// Edit Profile
+#editUserForm {
+	input, textarea {
+		display: block;
+		margin: 15px;
+	}
+	button {
+		display: block;
+		margin: 15px;
+		
+	}
+}

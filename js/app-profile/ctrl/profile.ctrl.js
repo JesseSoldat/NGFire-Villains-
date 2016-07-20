@@ -1,7 +1,13 @@
-let ProfileCtrl = function(){
+let ProfileCtrl = function($state){
+	let vm = this;
 
+	vm.editProfile = editProfile;
+
+	function editProfile(){
+		$state.go('root.editProfile');
+	}
 };
 
-ProfileCtrl.$inject = [];
+ProfileCtrl.$inject = ['$state'];
 
 export default ProfileCtrl;

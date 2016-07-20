@@ -33,6 +33,11 @@ let config = function($stateProvider, $urlRouterProvider){
 			controller: 'ProfileCtrl as vm',
 			templateUrl: 'templates/app-profile/profile.html'
 		})
+		.state('root.editProfile', {
+			url: '/editprofile',
+			controller: 'EditProfileCtrl as vm',
+			templateUrl: 'templates/app-profile/edit-profile.html'
+		})
 		;
 
 };
