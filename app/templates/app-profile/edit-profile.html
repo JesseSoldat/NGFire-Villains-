@@ -1,21 +1,27 @@
 <div>
 	<form id ="editUserForm" ng-submit="vm.editProfile(d)" ng-repeat="d in vm.data">
-		<input type="text" placeholder="First Name" ng-model="d.fName">
-		<input type="text" placeholder="Last Name" ng-model="d.lName">
-	<!-- 	<input type="text" placeholder="Address" ng-model="user.address">
-		<input type="text" placeholder="City" ng-model="user.city">
-		<input type="text" placeholder="State" ng-model="user.state">
-		<input type="text" placeholder="Zip Code" ng-model="user.zip">
-		<input type="text" placeholder="Country" ng-model="user.country">
-		<textarea placeholder="About Me" ng-model="user.about"></textarea> -->
+		<input type="text" placeholder="First Name" ng-model="d.fName" required="">
+		<input type="text" placeholder="Last Name" ng-model="d.lName" required="">
+		<input type="text" placeholder="Address" ng-model="d.address" required="">
+		<input type="text" placeholder="City" ng-model="d.city" required="">
+		<input type="text" placeholder="State" ng-model="d.state" required="">
+		<input type="text" placeholder="Zip Code" ng-model="d.zip" required="">
+		<input type="text" placeholder="Country" ng-model="d.country" required="">
+		<textarea placeholder="About Me" ng-model="d.about" required=""></textarea>
 		<button>Edit</button>
 	</form>
 </div>
 
 <div ng-show="vm.data <= 0">
 	<form id ="editUserForm" ng-submit="vm.addProfile(d)">
-		<input type="text" placeholder="First Name" ng-model="d.fName">
-		<input type="text" placeholder="Last Name" ng-model="d.lName">
+		<input type="text" placeholder="First Name" ng-model="d.fName" required="">
+		<input type="text" placeholder="Last Name" ng-model="d.lName" required="">
+		<input type="text" placeholder="Address" ng-model="d.address" required="">
+		<input type="text" placeholder="City" ng-model="d.city" required="">
+		<input type="text" placeholder="State" ng-model="d.state" required="">
+		<input type="text" placeholder="Zip Code" ng-model="d.zip" required="">
+		<input type="text" placeholder="Country" ng-model="d.country" required="">
+		<textarea placeholder="About Me" ng-model="d.about" required=""></textarea>
 		<button>No User</button>
 	</form>
 </div>

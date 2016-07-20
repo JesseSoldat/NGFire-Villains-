@@ -1,4 +1,4 @@
-let EditProfileCtrl = function(ProfileService){
+let EditProfileCtrl = function(ProfileService, $state){
 
 	let vm = this;
 	vm.addProfile = addProfile;
@@ -9,12 +9,11 @@ let EditProfileCtrl = function(ProfileService){
 	firebase.auth().onAuthStateChanged(function(user){
 		if(user){
 			currentUser = ProfileService.getProfile(user);
-			console.log(currentUser);
+			
 			vm.data = currentUser;
 		
 
 		} else {
-			console.log('no user');
 			vm.noUser = true;
 
 		}
@@ -30,6 +29,6 @@ let EditProfileCtrl = function(ProfileService){
 
 };
 
-EditProfileCtrl.$inject = ['ProfileService'];
+EditProfileCtrl.$inject = ['ProfileService', '$state'];
 
 export default EditProfileCtrl

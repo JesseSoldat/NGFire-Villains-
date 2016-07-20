@@ -170,7 +170,7 @@ module.exports = exports['default'];
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-var EditProfileCtrl = function EditProfileCtrl(ProfileService) {
+var EditProfileCtrl = function EditProfileCtrl(ProfileService, $state) {
 
 	var vm = this;
 	vm.addProfile = addProfile;
@@ -181,10 +181,9 @@ var EditProfileCtrl = function EditProfileCtrl(ProfileService) {
 	firebase.auth().onAuthStateChanged(function (user) {
 		if (user) {
 			currentUser = ProfileService.getProfile(user);
-			console.log(currentUser);
+
 			vm.data = currentUser;
 		} else {
-			console.log('no user');
 			vm.noUser = true;
 		}
 	});
@@ -198,7 +197,7 @@ var EditProfileCtrl = function EditProfileCtrl(ProfileService) {
 	}
 };
 
-EditProfileCtrl.$inject = ['ProfileService'];
+EditProfileCtrl.$inject = ['ProfileService', '$state'];
 
 exports['default'] = EditProfileCtrl;
 module.exports = exports['default'];
@@ -219,12 +218,9 @@ var ProfileCtrl = function ProfileCtrl($state, ProfileService, $scope) {
 	firebase.auth().onAuthStateChanged(function (user) {
 		if (user) {
 			currentUser = ProfileService.getProfile(user);
-			console.log(currentUser);
 
 			vm.data = currentUser;
-		} else {
-			console.log('no user');
-		}
+		} else {}
 	});
 
 	function editProfile() {
@@ -268,82 +264,73 @@ _angular2['default'].module('app.profile', []).controller('ProfileCtrl', _ctrlPr
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
-		value: true
+	value: true
 });
-var ProfileService = function ProfileService($firebaseArray) {
+var ProfileService = function ProfileService($firebaseArray, $state) {
 
-		this.getProfile = getProfile;
-		this.addProfile = addProfile;
-		this.editProfile = editProfile;
+	this.getProfile = getProfile;
+	this.addProfile = addProfile;
+	this.editProfile = editProfile;
 
-		function getProfile(user) {
-				var ref = firebase.database().ref('users/' + user.uid);
+	function getProfile(user) {
+		var ref = firebase.database().ref('users/' + user.uid);
 
-				var array = $firebaseArray(ref);
+		var array = $firebaseArray(ref);
 
-				return array;
-		}
+		return array;
+	}
 
-		function addProfile(obj) {
-				var user = firebase.auth().currentUser;
+	function addProfile(obj) {
+		var user = firebase.auth().currentUser;
 
-				var ref = firebase.database().ref('users/' + user.uid);
+		var ref = firebase.database().ref('users/' + user.uid);
 
-				var array = $firebaseArray(ref);
+		var array = $firebaseArray(ref);
 
-				array.$add({
-						email: user.email,
-						id: user.uid,
-						fName: obj.fName,
-						lName: obj.lName
-				});
-		}
+		array.$add({
+			email: user.email,
+			id: user.uid,
+			fName: obj.fName,
+			lName: obj.lName,
+			address: obj.address,
+			city: obj.city,
+			state: obj.state,
+			zip: obj.zip,
+			country: obj.country,
+			about: obj.about
+		});
+	}
 
-		// address: obj.address,
-		// city: obj.city,
-		// state: obj.state,
-		// zip: obj.zip,
-		// country: obj.country,
-		// about: obj.about,
-		function editProfile(obj) {
-				var user = firebase.auth().currentUser;
+	function editProfile(obj) {
+		var user = firebase.auth().currentUser;
 
-				var ref = firebase.database().ref('users/' + user.uid);
+		var ref = firebase.database().ref('users/' + user.uid);
 
-				var array = $firebaseArray(ref);
-				var id = user.uid;
-				var email = user.email;
+		var array = $firebaseArray(ref);
+		// let id = user.uid;
+		// let email = user.email;
 
-				//Edit a particular record under the user $id
-				setTimeout(function () {
+		//Edit a particular record under the user $id
+		setTimeout(function () {
 
-						var item = array.$getRecord(obj.$id);
-						console.log(item);
-						item.fName = obj.fName;
-						item.lName = obj.lName;
-						array.$save(item).then(function () {
-								// $state.go('root.dash');
-						});
-				}, 500);
-
-				//TEST
-
-				// array.$save({
-				// 	email: email,
-				// 	id: id,
-				// 	fName: obj.fName,
-				// 	lName: obj.lName,
-				// 	// address: obj.address,
-				// 	// city: obj.city,
-				// 	// state: obj.state,
-				// 	// zip: obj.zip,
-				// 	// country: obj.country,
-				// 	// about: obj.about,
-				// });
-		}
+			var item = array.$getRecord(obj.$id);
+			console.log(item);
+			item.fName = obj.fName;
+			item.lName = obj.lName;
+			item.address = obj.address;
+			item.city = obj.city;
+			item.state = obj.state;
+			item.zip = obj.zip;
+			item.country = obj.country;
+			item.about = obj.about;
+			array.$save(item).then(function () {
+				$state.go('root.profile');
+			});
+		}, 500);
+	}
 };
 
-ProfileService.$inject = ['$firebaseArray'];
+ProfileService.$inject = ['$firebaseArray', '$state'];
 
 exports['default'] = ProfileService;
 module.exports = exports['default'];

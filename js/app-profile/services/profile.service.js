@@ -1,4 +1,4 @@
-let ProfileService = function($firebaseArray){
+let ProfileService = function($firebaseArray, $state){
 
 	this.getProfile = getProfile;
 	this.addProfile = addProfile;
@@ -26,12 +26,12 @@ let ProfileService = function($firebaseArray){
 			id: user.uid,
 			fName: obj.fName,
 			lName: obj.lName,
-			// address: obj.address,
-			// city: obj.city,
-			// state: obj.state,
-			// zip: obj.zip,
-			// country: obj.country,
-			// about: obj.about,
+			address: obj.address,
+			city: obj.city,
+			state: obj.state,
+			zip: obj.zip,
+			country: obj.country,
+			about: obj.about,
 		});
 
 
@@ -44,11 +44,9 @@ let ProfileService = function($firebaseArray){
 		let ref = firebase.database().ref('users/' + user.uid );
 		
 		let array = $firebaseArray(ref);
-		let id = user.uid;
-		let email = user.email;
+		// let id = user.uid;
+		// let email = user.email;
 		
-
-
 		//Edit a particular record under the user $id
 		setTimeout(function(){
 		
@@ -56,32 +54,20 @@ let ProfileService = function($firebaseArray){
 		console.log(item);
 		item.fName = obj.fName;
 		item.lName = obj.lName;
+		item.address = obj.address;
+		item.city = obj.city;
+		item.state = obj.state;
+		item.zip = obj.zip;
+		item.country = obj.country;
+		item.about = obj.about;
 		array.$save(item).then(function() {
-			// $state.go('root.dash');
+			$state.go('root.profile');
 		});
 		}, 500);
 		
-		//TEST
-
-		// array.$save({
-		// 	email: email,
-		// 	id: id,
-		// 	fName: obj.fName,
-		// 	lName: obj.lName,
-		// 	// address: obj.address,
-		// 	// city: obj.city,
-		// 	// state: obj.state,
-		// 	// zip: obj.zip,
-		// 	// country: obj.country,
-		// 	// about: obj.about,
-		// });
-
-		
-
-
 	}
 };
 
-ProfileService.$inject = ['$firebaseArray'];
+ProfileService.$inject = ['$firebaseArray','$state'];
 
 export default ProfileService;
