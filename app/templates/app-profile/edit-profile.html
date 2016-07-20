@@ -1,13 +1,21 @@
 <div>
-	<form id ="editUserForm" ng-submit="vm.editProfile(user)">
-		<input type="text" placeholder="First Name" ng-model="user.fName">
-		<input type="text" placeholder="Last Name" ng-model="user.lName">
-		<input type="text" placeholder="Address" ng-model="user.address">
+	<form id ="editUserForm" ng-submit="vm.editProfile(d)" ng-repeat="d in vm.data">
+		<input type="text" placeholder="First Name" ng-model="d.fName">
+		<input type="text" placeholder="Last Name" ng-model="d.lName">
+	<!-- 	<input type="text" placeholder="Address" ng-model="user.address">
 		<input type="text" placeholder="City" ng-model="user.city">
 		<input type="text" placeholder="State" ng-model="user.state">
 		<input type="text" placeholder="Zip Code" ng-model="user.zip">
 		<input type="text" placeholder="Country" ng-model="user.country">
-		<textarea placeholder="About Me" ng-model="user.about"></textarea>
+		<textarea placeholder="About Me" ng-model="user.about"></textarea> -->
 		<button>Edit</button>
+	</form>
+</div>
+
+<div ng-show="vm.data <= 0">
+	<form id ="editUserForm" ng-submit="vm.addProfile(d)">
+		<input type="text" placeholder="First Name" ng-model="d.fName">
+		<input type="text" placeholder="Last Name" ng-model="d.lName">
+		<button>No User</button>
 	</form>
 </div>

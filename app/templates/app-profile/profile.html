@@ -1,4 +1,8 @@
 <h3>Profile</h3>
 
+<div ng-repeat="d in vm.data">
+	<h4>{{d.fName}} {{d.lName}}</h4>
+</div>
+
 
 <button ng-click="vm.editProfile()">Edit</button>

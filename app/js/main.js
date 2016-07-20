@@ -132,7 +132,7 @@ var _servicesLoginService2 = _interopRequireDefault(_servicesLoginService);
 
 _angular2['default'].module('app.core', ['ui.router']).config(_config2['default']).controller('LoginCtrl', _ctrlLoginCtrl2['default']).controller('DashCtrl', _ctrlDashCtrl2['default']).service('LoginService', _servicesLoginService2['default']);
 
-},{"./config":1,"./ctrl/dash.ctrl":2,"./ctrl/login.ctrl":3,"./services/login.service":5,"angular":16,"angular-ui-router":14}],5:[function(require,module,exports){
+},{"./config":1,"./ctrl/dash.ctrl":2,"./ctrl/login.ctrl":3,"./services/login.service":5,"angular":17,"angular-ui-router":15}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -165,25 +165,43 @@ exports['default'] = LoginService;
 module.exports = exports['default'];
 
 },{}],6:[function(require,module,exports){
-"use strict";
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-var EditProfileCtrl = function EditProfileCtrl() {
+var EditProfileCtrl = function EditProfileCtrl(ProfileService) {
 
 	var vm = this;
+	vm.addProfile = addProfile;
 	vm.editProfile = editProfile;
 
+	var currentUser = undefined;
+
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			currentUser = ProfileService.getProfile(user);
+			console.log(currentUser);
+			vm.data = currentUser;
+		} else {
+			console.log('no user');
+			vm.noUser = true;
+		}
+	});
+	function addProfile(user) {
+		ProfileService.addProfile(user, currentUser);
+	}
+
 	function editProfile(user) {
-		console.log(user);
+
+		ProfileService.editProfile(user);
 	}
 };
 
-EditProfileCtrl.$inject = [];
+EditProfileCtrl.$inject = ['ProfileService'];
 
-exports["default"] = EditProfileCtrl;
-module.exports = exports["default"];
+exports['default'] = EditProfileCtrl;
+module.exports = exports['default'];
 
 },{}],7:[function(require,module,exports){
 'use strict';
@@ -191,17 +209,30 @@ module.exports = exports["default"];
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-var ProfileCtrl = function ProfileCtrl($state) {
+var ProfileCtrl = function ProfileCtrl($state, ProfileService, $scope) {
 	var vm = this;
 
 	vm.editProfile = editProfile;
+
+	var currentUser = undefined;
+
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			currentUser = ProfileService.getProfile(user);
+			console.log(currentUser);
+
+			vm.data = currentUser;
+		} else {
+			console.log('no user');
+		}
+	});
 
 	function editProfile() {
 		$state.go('root.editProfile');
 	}
 };
 
-ProfileCtrl.$inject = ['$state'];
+ProfileCtrl.$inject = ['$state', 'ProfileService', '$scope'];
 
 exports['default'] = ProfileCtrl;
 module.exports = exports['default'];
@@ -215,6 +246,8 @@ var _angular = require('angular');
 
 var _angular2 = _interopRequireDefault(_angular);
 
+// CTRL
+
 var _ctrlProfileCtrl = require('./ctrl/profile.ctrl');
 
 var _ctrlProfileCtrl2 = _interopRequireDefault(_ctrlProfileCtrl);
@@ -223,9 +256,99 @@ var _ctrlEditProfileCtrl = require('./ctrl/edit-profile.ctrl');
 
 var _ctrlEditProfileCtrl2 = _interopRequireDefault(_ctrlEditProfileCtrl);
 
-_angular2['default'].module('app.profile', []).controller('ProfileCtrl', _ctrlProfileCtrl2['default']).controller('EditProfileCtrl', _ctrlEditProfileCtrl2['default']);
+// SERVICES
 
-},{"./ctrl/edit-profile.ctrl":6,"./ctrl/profile.ctrl":7,"angular":16}],9:[function(require,module,exports){
+var _servicesProfileService = require('./services/profile.service');
+
+var _servicesProfileService2 = _interopRequireDefault(_servicesProfileService);
+
+_angular2['default'].module('app.profile', []).controller('ProfileCtrl', _ctrlProfileCtrl2['default']).controller('EditProfileCtrl', _ctrlEditProfileCtrl2['default']).service('ProfileService', _servicesProfileService2['default']);
+
+},{"./ctrl/edit-profile.ctrl":6,"./ctrl/profile.ctrl":7,"./services/profile.service":9,"angular":17}],9:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+		value: true
+});
+var ProfileService = function ProfileService($firebaseArray) {
+
+		this.getProfile = getProfile;
+		this.addProfile = addProfile;
+		this.editProfile = editProfile;
+
+		function getProfile(user) {
+				var ref = firebase.database().ref('users/' + user.uid);
+
+				var array = $firebaseArray(ref);
+
+				return array;
+		}
+
+		function addProfile(obj) {
+				var user = firebase.auth().currentUser;
+
+				var ref = firebase.database().ref('users/' + user.uid);
+
+				var array = $firebaseArray(ref);
+
+				array.$add({
+						email: user.email,
+						id: user.uid,
+						fName: obj.fName,
+						lName: obj.lName
+				});
+		}
+
+		// address: obj.address,
+		// city: obj.city,
+		// state: obj.state,
+		// zip: obj.zip,
+		// country: obj.country,
+		// about: obj.about,
+		function editProfile(obj) {
+				var user = firebase.auth().currentUser;
+
+				var ref = firebase.database().ref('users/' + user.uid);
+
+				var array = $firebaseArray(ref);
+				var id = user.uid;
+				var email = user.email;
+
+				//Edit a particular record under the user $id
+				setTimeout(function () {
+
+						var item = array.$getRecord(obj.$id);
+						console.log(item);
+						item.fName = obj.fName;
+						item.lName = obj.lName;
+						array.$save(item).then(function () {
+								// $state.go('root.dash');
+						});
+				}, 500);
+
+				//TEST
+
+				// array.$save({
+				// 	email: email,
+				// 	id: id,
+				// 	fName: obj.fName,
+				// 	lName: obj.lName,
+				// 	// address: obj.address,
+				// 	// city: obj.city,
+				// 	// state: obj.state,
+				// 	// zip: obj.zip,
+				// 	// country: obj.country,
+				// 	// about: obj.about,
+				// });
+		}
+};
+
+ProfileService.$inject = ['$firebaseArray'];
+
+exports['default'] = ProfileService;
+module.exports = exports['default'];
+
+},{}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -252,7 +375,7 @@ AddVillainCtrl.$inject = ['VillainService', '$state'];
 exports['default'] = AddVillainCtrl;
 module.exports = exports['default'];
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -286,7 +409,7 @@ VillainsCtrl.$inject = ['VillainService', '$state', '$scope'];
 exports['default'] = VillainsCtrl;
 module.exports = exports['default'];
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -311,7 +434,7 @@ _angular2['default'].module('app.villains', [])
 //CTRL
 .controller('VillainsCtrl', _ctrlVillainsCtrl2['default']).controller('AddVillainCtrl', _ctrlAddVillainCtrl2['default']).service('VillainService', _servicesVillainService2['default']);
 
-},{"./ctrl/add-villain.ctrl":9,"./ctrl/villains.ctrl":10,"./services/villain.service":12,"angular":16}],12:[function(require,module,exports){
+},{"./ctrl/add-villain.ctrl":10,"./ctrl/villains.ctrl":11,"./services/villain.service":13,"angular":17}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -344,7 +467,7 @@ VillainService.$inject = ['$firebaseArray'];
 exports['default'] = VillainService;
 module.exports = exports['default'];
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -386,7 +509,7 @@ _firebase2['default'].initializeApp(fireConfig);
 
 _angular2['default'].module('app', ['app.core', 'app.villains', 'app.profile', 'firebase']);
 
-},{"./app-core/index":4,"./app-profile/index":8,"./app-villains/index":11,"angular":16,"angularfire":18,"firebase":19,"jquery":21,"underscore":22}],14:[function(require,module,exports){
+},{"./app-core/index":4,"./app-profile/index":8,"./app-villains/index":12,"angular":17,"angularfire":19,"firebase":20,"jquery":22,"underscore":23}],15:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.3.1
@@ -4963,7 +5086,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.7
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -36437,11 +36560,11 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":15}],17:[function(require,module,exports){
+},{"./angular":16}],18:[function(require,module,exports){
 /*!
  * AngularFire is the officially supported AngularJS binding for Firebase. Firebase
  * is a full backend so you don't need servers to build your Angular app. AngularFire
@@ -38700,7 +38823,7 @@ if ( typeof Object.getPrototypeOf !== "function" ) {
     }
 })();
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 // Make sure dependencies are loaded on the window
 require('angular');
 require('firebase');
@@ -38711,7 +38834,7 @@ require('./dist/angularfire');
 // Export the module name from the Angular module
 module.exports = 'firebase';
 
-},{"./dist/angularfire":17,"angular":16,"firebase":19}],19:[function(require,module,exports){
+},{"./dist/angularfire":18,"angular":17,"firebase":20}],20:[function(require,module,exports){
 /**
  *  Firebase libraries for browser - npm package.
  *
@@ -38722,7 +38845,7 @@ module.exports = 'firebase';
 require('./firebase');
 module.exports = firebase;
 
-},{"./firebase":20}],20:[function(require,module,exports){
+},{"./firebase":21}],21:[function(require,module,exports){
 (function (global){
 /*! @license Firebase v3.2.0
     Build: 3.2.0-rc.2
@@ -39290,7 +39413,7 @@ ra.STATE_CHANGED="state_changed";sa.RUNNING="running";sa.PAUSED="paused";sa.SUCC
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.4
  * http://jquery.com/
@@ -49106,7 +49229,7 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -50656,7 +50779,7 @@ return jQuery;
   }
 }.call(this));
 
-},{}]},{},[13])
+},{}]},{},[14])
 
 
 //# sourceMappingURL=main.js.map
