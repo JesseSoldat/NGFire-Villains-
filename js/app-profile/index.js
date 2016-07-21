@@ -5,6 +5,8 @@ import ProfileCtrl from './ctrl/profile.ctrl';
 import EditProfileCtrl from './ctrl/edit-profile.ctrl';
 // SERVICES
 import ProfileService from './services/profile.service';
+// DIRECTIVES
+import fileUpload from './directives/file-upload.directive';
 angular
 	.module('app.profile', [])
 
@@ -12,4 +14,6 @@ angular
 	.controller('EditProfileCtrl', EditProfileCtrl)
 
 	.service('ProfileService', ProfileService)
+
+	.directive('fileUpload', fileUpload)
 	;
