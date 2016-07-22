@@ -2220,4 +2220,9 @@ a {
   display: block;
   margin: 15px; }
 
+.userPhotosContainer img {
+  width: 49%;
+  margin: 1%;
+  display: inline-block; }
+
 /*# sourceMappingURL=main.css.map */

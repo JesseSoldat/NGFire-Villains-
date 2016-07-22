@@ -1,9 +1,10 @@
-let ProfileService = function($firebaseArray, $state){
+let ProfileService = function($firebaseArray, $state, $rootScope){
 
 	this.getProfile = getProfile;
 	this.addProfile = addProfile;
 	this.editProfile = editProfile;
 	this.fileUpload = fileUpload;
+	this.getPhotos = getPhotos;
 
 	function getProfile(user){
 		let ref = firebase.database().ref('users/' + user.uid);
@@ -16,8 +17,7 @@ let ProfileService = function($firebaseArray, $state){
 
 	function addProfile(obj) {
 		var user = firebase.auth().currentUser;
-
-		
+	
 		let ref = firebase.database().ref('users/' + user.uid);
 
 		let array = $firebaseArray(ref);
@@ -65,14 +65,13 @@ let ProfileService = function($firebaseArray, $state){
 	}
 
 	function fileUpload(file, avatar){
-		// console.log(file.name);
+		
 		var user = firebase.auth().currentUser;
-		// console.log(user.uid);
+	
 
 		//If this is a file for the user's avatar
 		if(avatar === "avatar") {
-			// console.log('true');
-
+		
 			let ref = firebase.database().ref('users/' + user.uid+ '/' + avatar);
 
 			let array = $firebaseArray(ref);
@@ -80,9 +79,8 @@ let ProfileService = function($firebaseArray, $state){
 			setTimeout(function(){
 				//Check to see if the user already has a avatar
 				if (array.length > 0) {
-					// console.log('Have already!');
+				
 					//Edit the current avatar
-					// console.log(array);
 					let item = array.$getRecord(array[0].$id);
 					item.name = file.name
 					array.$save(item).then(function() {
@@ -95,16 +93,44 @@ let ProfileService = function($firebaseArray, $state){
 					name: file.name
 					});
 				}
-			},500);
-		}
+			},500);	
+		} //if
+
+		if (avatar === "photos") {
+			//add a DATABASE RECORD to keep track of users' photos
+			let ref = firebase.database().ref('users/' + user.uid+ '/' + avatar);
+
+			let array = $firebaseArray(ref);
+
+			array.$add({
+					name: file.name
+			});
+			//--------------------------
 
 
+			//upload the photo to STORAGE
+			var storageRef = firebase.storage().ref();
+			var imgRef = storageRef.child(user.uid + '/' + file.name);
+			var uploadTask = imgRef.put(file);
+			//--------------------------
+			
+		} //if
+	} //fileUpload
+
+	function getPhotos(){
 		
 
-		
+		var user = firebase.auth().currentUser;
+	 	// console.log(user);
+		let ref = firebase.database().ref('users/' + user.uid + '/photos');
+
+		let array = $firebaseArray(ref);
+
+		return array;
+
 	}
 };
 
-ProfileService.$inject = ['$firebaseArray','$state'];
+ProfileService.$inject = ['$firebaseArray','$state', '$rootScope'];
 
 export default ProfileService;

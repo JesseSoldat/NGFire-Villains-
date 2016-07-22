@@ -38,6 +38,11 @@ let config = function($stateProvider, $urlRouterProvider){
 			controller: 'EditProfileCtrl as vm',
 			templateUrl: 'templates/app-profile/edit-profile.html'
 		})
+		.state('root.photos', {
+			url: '/photos',
+			controller: 'PhotosCtrl as vm',
+			templateUrl: 'templates/app-profile/photos.html'
+		})
 		;
 
 };
